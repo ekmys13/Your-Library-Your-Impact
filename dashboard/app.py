@@ -14,34 +14,23 @@ from src.filters import render_filters, apply_filters
 from src.charts import plot_response_hist, plot_borough_bar
 from src.layouts import header_metrics, body_layout_tabs
 
-
-
-
-
 def main() -> None:
     st.set_page_config(
-        page_title="NYC 311 Mini Dashboard (Lab)",
+        page_title="Your Library, Your Impact",
         layout="wide",
     )
 
-    st.title("NYC 311 Mini Dashboard")
-    st.caption("Starter app for IMT 561 lab: layouts + filters + coordinated views.")
+    # -------------------------
+    ## Header (sidebar by default)
+    # Header/Title
+    st.title("Your Library, Your Impact")
+    st.caption("Data Dashboard for Pacific Northwest University of Health Sciences Library.")
 
     # ✅ Data loading (cached)
     df = load_data("data/sample.csv")
 
     # -------------------------
-    # TODO (DEMO): Add a quick 'data sanity' check
-    # - show row count
-    # - show first 5 rows (optional)
-    # -------------------------
-    # HINT: st.write / st.dataframe
-    # st.write(...)
-    # st.dataframe(...)
-
-    # -------------------------
-    # Filters (sidebar by default)
-    # -------------------------
+    ## Filters (sidebar by default)
     # render_filters returns a dictionary of user selections
     selections = render_filters(df)
 
@@ -49,53 +38,43 @@ def main() -> None:
     df_f = apply_filters(df, selections)
 
     # -------------------------
-    # TODO (DEMO): Explain Streamlit re-runs
-    # - changing a widget reruns the script top-to-bottom
-    # - df_f changes because selections changes
-    # -------------------------
-
-    # -------------------------
-    # Header metrics
-    # -------------------------
-    # TODO (IN-CLASS): Replace placeholder metrics with real calculations
+    ## KPIS
+    st.subheader("Key Insights", divider="grey")
     header_metrics(df_f)
-
-    st.divider()
+    st.caption("*NOTE: Key Insight metrics update based on the selected Date of Symptom Onset range,"
+               " all percent changes reflect how these set values shift over time.", text_alignment="left")
 
     # -------------------------
     # Main body
     # -------------------------
+    st.subheader("Visualizations", divider="grey")
+    body_layout_tabs(df_f)
+
+    # -------------------------
+    # Alt. Main body from Lab06; look at table with a specific visual
+    # -------------------------
     # Tabs layout by default (3 tabs)
-    tab_choice = st.radio(
-        "Choose a layout for the body (lab demo uses tabs; assignment can remix):",
-        ["Tabs (3)", "Two Columns"],
-        horizontal=True,
-    )
+    # tab_choice = st.radio(
+    # "Choose a layout for the body (lab demo uses tabs; assignment can remix):",
+    # ["Tabs (3)", "Two Columns"],
+    # horizontal=True,
+    # )
 
-    if tab_choice == "Tabs (3)":
-        body_layout_tabs(df_f)
-    else:
-        # -------------------------
-        # TODO (DEMO): Implement a 2-column layout
-        # - left column: a chart
-        # - right column: a table
-        # -------------------------
-        # HINT: st.columns(2)
-        col1, col2 = st.columns(2)
-        with col1:
-            st.subheader("Response Time Distribution")
-            plot_response_hist(df_f)
-
-        with col2:
-            st.subheader("Filtered Rows")
-            st.dataframe(df_f, use_container_width=True, height=420)
-
-
+    # if tab_choice == "Tabs (3)":
+    # body_layout_tabs()
+    # else:
     # -------------------------
-    # TODO (IN-CLASS): Add a footer with a short 'design note'
-    # - 2–3 sentences: who is the audience + what questions can they answer?
+    # - left column: a chart
+    # - right column: a table
     # -------------------------
+    # col1, col2 = st.columns(2)
+    # with col1:
+    # st.subheader("Response Time Distribution")
+    # plot_response_hist(df_f)
 
+    # with col2:
+    # st.subheader("Filtered Rows")
+    # st.dataframe(df_f, use_container_width=True, height=420)
 
 if __name__ == "__main__":
     main()
